@@ -18,7 +18,7 @@
     <nav class="bg-neutral-200 dark:bg-neutral-900 p-4 w-full fixed top-0 z-10">
         <div class="flex items-center justify-between">
             <!-- Logo -->
-            <div class="flex-shrink-0">
+            <div class="flex-shrink-0 animate__animated animate__fadeIn animate__delay-1s">
                 <a href="#home">
                     <img src="resources/Logo.png" alt="Logo" class="w-24 h-24"> <!-- Increased logo size -->
                 </a>
@@ -26,10 +26,10 @@
 
             <!-- Centered Navigation Links -->
             <ul class="flex-1 flex justify-center space-x-8 text-blue-500">
-                <li><a href="#home" class="hover:text-gray-300">Home</a></li>
-                <li><a href="#services" class="hover:text-gray-300">Services</a></li>
-                <li><a href="#about" class="hover:text-gray-300">About</a></li>
-                <li><a href="#contact" class="hover:text-gray-300">Contact</a></li>
+                <li><a href="#home" class="hover:text-gray-300 animate__animated animate__fadeIn animate__delay-2s">Home</a></li>
+                <li><a href="#services" class="hover:text-gray-300 animate__animated animate__fadeIn animate__delay-2s">Services</a></li>
+                <li><a href="#about" class="hover:text-gray-300 animate__animated animate__fadeIn animate__delay-2s">About</a></li>
+                <li><a href="#contact" class="hover:text-gray-300 animate__animated animate__fadeIn animate__delay-2s">Contact</a></li>
             </ul>
         </div>
     </nav>
@@ -37,21 +37,21 @@
     <!-- Main Content -->
     <main class="container mx-auto p-6 text-center flex-grow pt-[10%] md:pt-[15%]">
         <div class="grid place-items-center gap-4">
-            <div class="text-2xl md:text-4xl dark:text-white">
+            <div class="text-2xl md:text-4xl dark:text-white animate__animated animate__zoomIn">
                 <span class="page_wave-animation__eZFdU" style="animation-delay:1800ms">💸</span>
                 <span class="page_special-text__JDcjy">PREISE</span>
             </div>
-            <p class="text-xl mt-4">Die Firma OmniCloud ist ein innovativer neuer Player im IaaS-Cloud-
+            <p class="text-xl mt-4 animate__animated animate__fadeIn animate__delay-1s">Die Firma OmniCloud ist ein innovativer neuer Player im IaaS-Cloud-
                 <br>Hyperscaler-Markt. Bestellen einer solchen VM müssen folgende
                 <br>Angaben gemacht werden.
             </p>
         </div>
 
         <!-- Form Container with 3 boxes layout -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-8 p-6 bg-neutral-300 dark:bg-neutral-800 rounded-lg shadow-lg">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-8 p-6 bg-neutral-300 dark:bg-neutral-800 rounded-lg shadow-lg animate__animated animate__fadeIn animate__delay-2s">
             <form action="/php/index.php" method="POST" class="space-y-4">
                 <label for="cpu" class="block text-lg font-medium">CPU Cores:</label>
-                <select name="cpu" id="cpu" class="w-full p-2 bg-neutral-200 dark:bg-neutral-900 rounded-md">
+                <select name="cpu" id="cpu" class="w-full p-2 bg-neutral-200 dark:bg-neutral-900 rounded-md animate__animated animate__fadeIn">
                     <option value="1">1 Core</option>
                     <option value="2">2 Cores</option>
                     <option value="4">4 Cores</option>
@@ -62,31 +62,31 @@
 
             <form action="/php/index.php" method="POST" class="space-y-4">
                 <label for="ram" class="block text-lg font-medium">RAM (MB):</label>
-                <select name="ram" id="ram" class="w-full p-2 bg-neutral-200 dark:bg-neutral-900 rounded-md">
+                <select name="ram" id="ram" class="w-full p-2 bg-neutral-200 dark:bg-neutral-900 rounded-md animate__animated animate__fadeIn animate__delay-1s">
                     <option value="512">512 MB</option>
                     <option value="1024">1,024 MB</option>
                     <option value="2048">2,048 MB</option>
                     <option value="4096">4,096 MB</option>
                     <option value="8192">8,192 MB</option>
                 </select>
+                <button type="submit" class="w-full py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 mt-4 animate__animated animate__fadeIn animate__delay-3s">Provision VM</button>
             </form>
 
             <form action="/php/index.php" method="POST" class="space-y-4">
                 <label for="ssd" class="block text-lg font-medium">SSD Storage (GB):</label>
-                <select name="ssd" id="ssd" class="w-full p-2 bg-neutral-200 dark:bg-neutral-900 rounded-md">
+                <select name="ssd" id="ssd" class="w-full p-2 bg-neutral-200 dark:bg-neutral-900 rounded-md animate__animated animate__fadeIn animate__delay-2s">
                     <option value="10">10 GB</option>
                     <option value="20">20 GB</option>
                     <option value="40">40 GB</option>
                     <option value="80">80 GB</option>
                     <option value="240">240 GB</option>
                 </select>
-                <button type="submit" class="w-full py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 mt-4">Provision VM</button>
             </form>
         </div>
     </main>
 
     <!-- Footer -->
-    <footer class="bg-neutral-200 dark:bg-neutral-900 text-white text-center py-4 w-full">
+    <footer class="bg-neutral-200 dark:bg-neutral-900 text-white text-center py-4 w-full animate__animated animate__fadeIn animate__delay-4s">
         <p>&copy; 2024 Modularbeit M346 | All rights reserved.</p>
     </footer>
 
