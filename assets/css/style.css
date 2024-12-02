@@ -817,6 +817,10 @@ video {
   gap: 2rem;
 }
 
+.gap-40 {
+  gap: 10rem;
+}
+
 .space-x-8 > :not([hidden]) ~ :not([hidden]) {
   --tw-space-x-reverse: 0;
   margin-right: calc(2rem * var(--tw-space-x-reverse));
@@ -1179,6 +1183,10 @@ video {
 
   .md\:pt-\[15\%\] {
     padding-top: 15%;
+  }
+
+  .md\:pt-\[10\%\] {
+    padding-top: 10%;
   }
 
   .md\:text-4xl {
