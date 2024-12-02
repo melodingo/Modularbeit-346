@@ -44,6 +44,39 @@
                 Angaben gemacht werden.
             </p>
         </div>
+        <div>
+            <form action="index.php" method="POST">
+                <label for="cpu">CPU Cores:</label>
+                <select name="cpu" id="cpu">
+                    <option value="1">1 Core</option>
+                    <option value="2">2 Cores</option>
+                    <option value="4">4 Cores</option>
+                    <option value="8">8 Cores</option>
+                    <option value="16">16 Cores</option>
+                </select>
+            
+                <label for="ram">RAM (MB):</label>
+                <select name="ram" id="ram">
+                    <option value="512">512 MB</option>
+                    <option value="1024">1,024 MB</option>
+                    <option value="2048">2,048 MB</option>
+                    <option value="4096">4,096 MB</option>
+                    <option value="8192">8,192 MB</option>
+                </select>
+            
+                <label for="ssd">SSD Storage (GB):</label>
+                <select name="ssd" id="ssd">
+                    <option value="10">10 GB</option>
+                    <option value="20">20 GB</option>
+                    <option value="40">40 GB</option>
+                    <option value="80">80 GB</option>
+                    <option value="240">240 GB</option>
+                </select>
+            
+                <button type="submit">Provision VM</button>
+            </form>
+            
+        </div>
     </main>
 
     <!-- Footer -->
