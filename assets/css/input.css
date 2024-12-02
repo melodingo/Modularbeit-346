@@ -6,3 +6,73 @@
 * {
     font-family: Jetbrains Mono,monospace!important
 }
+
+@keyframes page_wave__7vhC1 {
+    0% {
+        transform: rotate(0deg)
+    }
+
+    10% {
+        transform: rotate(14deg)
+    }
+
+    20% {
+        transform: rotate(-8deg)
+    }
+
+    30% {
+        transform: rotate(14deg)
+    }
+
+    40% {
+        transform: rotate(-4deg)
+    }
+
+    50% {
+        transform: rotate(10deg)
+    }
+
+    60% {
+        transform: rotate(0deg)
+    }
+
+    to {
+        transform: rotate(0deg)
+    }
+}
+
+.page_wave-animation__eZFdU {
+    animation-name: page_wave__7vhC1;
+    animation-duration: 2.5s;
+    animation-iteration-count: infinite;
+    transform-origin: 50% 50%;
+    display: inline-block
+}
+
+.page_special-text__JDcjy {
+    background: linear-gradient(-45deg,#4da5fe,#4da5fe,#d041c2,#d041c2);
+    background: -moz-linear-gradient(-45deg,#4da5fe,#4da5fe,#d041c2,#d041c2);
+    background: -webkit-gradient(-45deg,#4da5fe,#4da5fe,#d041c2,#d041c2);
+    background-size: 300%;
+    -webkit-background-clip: text;
+    -moz-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: page_gradientAnimation__if28P 10s ease-in-out infinite;
+    -moz-animation: page_gradientAnimation__if28P 10s ease-in-out infinite;
+    -webkit-animation: page_gradientAnimation__if28P 10s ease-in-out infinite
+}
+
+.page_special-text__JDcjy::-moz-selection {
+    color: #fff;
+    -webkit-background-clip: border-box;
+    background-clip: border-box;
+    -webkit-text-fill-color: #fff
+}
+
+.page_special-text__JDcjy::selection {
+    color: #fff;
+    -webkit-background-clip: border-box;
+    background-clip: border-box;
+    -webkit-text-fill-color: #fff
+}
