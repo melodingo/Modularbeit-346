@@ -76,3 +76,7 @@
     background-clip: border-box;
     -webkit-text-fill-color: #fff
 }
+
+.mr-2 {
+    margin-right: .5rem
+}

@@ -113,6 +113,7 @@
     <link href="./assets/css/style.css" rel="stylesheet">
     <link href="./assets/css/input.css" rel="stylesheet">
     <link href="./assets/css/animate.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-neutral-200 dark:bg-neutral-900 text-white font-sans flex flex-col min-h-screen">
 
@@ -127,7 +128,7 @@
             </div>
 
             <!-- Centered Navigation Links -->
-            <ul class="flex-1 flex justify-center space-x-8 text-blue-500">
+            <ul class="absolute left-1/2 transform -translate-x-1/2 flex space-x-8 text-blue-500">
                 <li><a href="#home" class="hover:text-gray-300 animate__animated animate__fadeIn animate__delay-2s">Home</a></li>
                 <li><a href="#services" class="hover:text-gray-300 animate__animated animate__fadeIn animate__delay-2s">Services</a></li>
                 <li><a href="#about" class="hover:text-gray-300 animate__animated animate__fadeIn animate__delay-2s">About</a></li>
@@ -138,12 +139,13 @@
 
     <!-- Main Content -->
     <main class="container mx-auto p-6 text-center flex-grow pt-[10%] md:pt-[15%]">
-        <div class="grid place-items-center gap-4">
-            <div class="text-2xl md:text-4xl dark:text-white animate__animated animate__zoomIn">
-                <span class="page_wave-animation__eZFdU" style="animation-delay:1800ms">💸</span>
-                <span class="page_special-text__JDcjy">PREISE</span>
+        <div class="grid gap-4">
+            <div class="flex items-center justify-center text-2xl md:text-4xl dark:text-white animate__animated animate__zoomIn">
+                <span class="mr-2 page_wave-animation__eZFdU" style="animation-delay:1800ms">💸</span>
+                <span class="page_special-text__JDcjy text-center">PREISE</span>
             </div>
-            <p class="text-xl mt-4 animate__animated animate__fadeIn animate__delay-1s">Die Firma OmniCloud ist ein innovativer neuer Player im IaaS-Cloud-
+            <p class="text-xl mt-4 animate__animated animate__fadeIn animate__delay-1s">
+                Die Firma OmniCloud ist ein innovativer neuer Player im IaaS-Cloud-
                 <br>Hyperscaler-Markt. Bestellen einer solchen VM müssen folgende
                 <br>Angaben gemacht werden.
             </p>
