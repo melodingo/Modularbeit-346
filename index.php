@@ -123,11 +123,10 @@
             <!-- Logo -->
             <div class="flex-shrink-0 animate__animated animate__fadeIn animate__delay-1s">
                 <a href="#home">
-                    <img src="resources/Logo.png" alt="Logo" class="w-24 h-24"> <!-- Increased logo size -->
+                    <img src="resources/Logo.png" alt="Logo" class="w-24 h-24">
                 </a>
             </div>
 
-            <!-- Centered Navigation Links -->
             <ul class="absolute left-1/2 transform -translate-x-1/2 flex space-x-8 text-blue-500">
                 <li><a href="#home" class="hover:text-gray-300 animate__animated animate__fadeIn animate__delay-2s">Home</a></li>
                 <li><a href="#services" class="hover:text-gray-300 animate__animated animate__fadeIn animate__delay-2s">Services</a></li>
@@ -151,9 +150,9 @@
             </p>
         </div>
 
-        <!-- Form Container with 3 boxes layout -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-8 p-6 bg-neutral-300 dark:bg-neutral-800 rounded-lg shadow-lg animate__animated animate__fadeIn animate__delay-2s">
-            <form action="/php/index.php" method="POST" class="space-y-4">
+        <div class="mt-8 p-6 bg-neutral-300 dark:bg-neutral-800 rounded-lg shadow-lg animate__animated animate__fadeIn animate__delay-2s">
+        <form action="/php/index.php" method="POST" class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-6">
+            <div class="flex-1">
                 <label for="cpu" class="block text-lg font-medium">CPU Cores:</label>
                 <div class="text-sm text-gray-500 dark:text-gray-400 mb-2">
                     1 Core (5 CHF) <br>
@@ -163,7 +162,6 @@
                     16 Cores (45 CHF) <br>
                     <br>
                     <br>
-
                 </div>
                 <select name="cpu" id="cpu" class="w-full p-2 bg-neutral-200 dark:bg-neutral-900 rounded-md animate__animated animate__fadeIn">
                     <option value="1">1 Core</option>
@@ -172,10 +170,10 @@
                     <option value="8">8 Cores</option>
                     <option value="16">16 Cores</option>
                 </select>
-            </form>
+            </div>
 
-            <form action="/php/index.php" method="POST" class="space-y-4">
-                <label for="ram" class="block text-lg font-medium">RAM (MB):</label>
+            <div class="flex-1">
+                <label for="ram" class="block text-lg font-medium mt-4 md:mt-0">RAM (MB):</label>
                 <div class="text-sm text-gray-500 dark:text-gray-400 mb-2">
                     512 MB (5 CHF) <br>
                     1,024 MB (10 CHF) <br>
@@ -194,11 +192,13 @@
                     <option value="16384">16,384 MB</option>
                     <option value="32768">32,768 MB</option>
                 </select>
-                <button type="submit" class="w-full py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 mt-4 animate__animated animate__fadeIn animate__delay-3s">Provision VM</button>
-            </form>
+                <div class="flex items-end mt-4 md:mt-0">
+                    <button type="submit" class="w-full py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">Provision VM</button>
+                </div>
+            </div>
 
-            <form action="/php/index.php" method="POST" class="space-y-4">
-                <label for="ssd" class="block text-lg font-medium">SSD Storage (GB):</label>
+            <div class="flex-1">
+                <label for="ssd" class="block text-lg font-medium mt-4 md:mt-0">SSD Storage (GB):</label>
                 <div class="text-sm text-gray-500 dark:text-gray-400 mb-2">
                     10 GB (5 CHF) <br>
                     20 GB (10 CHF) <br>
@@ -217,8 +217,8 @@
                     <option value="500">500 GB</option>
                     <option value="1000">1000 GB</option>
                 </select>
-            </form>
-        </div>
+            </div>
+        </form>   
     </main>
 
     <!-- Footer -->
