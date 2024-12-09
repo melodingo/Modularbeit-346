@@ -23,6 +23,7 @@ class Server {
     private $used_cpu = 0;
     private $used_ram = 0;
     private $used_ssd = 0;
+    public $vms = []; // Add this line to keep track of VMs
 
     public function __construct($name, $cpu, $ram, $ssd) {
         $this->name = $name;
@@ -42,6 +43,8 @@ class Server {
             $this->used_cpu += $vm->cpu;
             $this->used_ram += $vm->ram;
             $this->used_ssd += $vm->ssd;
+            $this->vms[] = $vm; // Add VM to the list
+            $this->logVMChange("Added", $vm); // Log the addition
             return true;
         }
         return false;
@@ -58,6 +61,11 @@ class Server {
     public function getTotalRevenue() {
         // Assuming each VM has a price attribute
         return $this->used_cpu * 5 + $this->used_ram * 0.1 + $this->used_ssd * 0.05;
+    }
+
+    private function logVMChange($action, VM $vm) {
+        $logMessage = "$action VM: {$vm->name}, CPU: {$vm->cpu}, RAM: {$vm->ram}, SSD: {$vm->ssd}, Price: {$vm->price} CHF\n";
+        file_put_contents('vm_changes.txt', $logMessage, FILE_APPEND);
     }
 }
 
@@ -88,6 +96,22 @@ class OmniCloud {
     public function getServers() {
         return $this->servers;
     }
+
+    public function deleteVM($vmName) {
+        foreach ($this->servers as $server) {
+            foreach ($server->vms as $index => $vm) {
+                if ($vm->name === $vmName) {
+                    $server->used_cpu -= $vm->cpu;
+                    $server->used_ram -= $vm->ram;
+                    $server->used_ssd -= $vm->ssd;
+                    unset($server->vms[$index]);
+                    $server->logVMChange("Removed", $vm); // Log the removal
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }
 
 // Define servers
@@ -102,13 +126,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $response = ['message' => ''];
 
     try {
-        if (isset($_POST['cpu']) && isset($_POST['ram']) && isset($_POST['ssd'])) {
+        if (isset($_POST['delete_vm'])) {
+            $vmName = $_POST['delete_vm'];
+            if ($omniCloud->deleteVM($vmName)) {
+                $response['message'] = "VM $vmName deleted successfully.";
+            }
+        } else if (isset($_POST['cpu']) && isset($_POST['ram']) && isset($_POST['ssd'])) {
             $cpu = intval($_POST['cpu']);
             $ram = intval($_POST['ram']);
             $ssd = intval($_POST['ssd']);
             $vmName = "VM-" . uniqid();
 
-            // Define costs based on the form options
             $cpuCost = 0;
             $ramCost = 0;
             $ssdCost = 0;
@@ -185,7 +213,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $response['message'] = "No server has enough resources to allocate the VM.";
             }
 
-            // Add available resources to the response
             $response['available_resources'] = [];
             foreach ($omniCloud->getServers() as $server) {
                 $response['available_resources'][$server->name] = $server->getAvailableResources();
@@ -198,43 +225,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     echo json_encode($response);
     exit();
-
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    header('Content-Type: application/json');
-    $response = ['message' => ''];
-
-    try {
-        if (isset($_POST['delete_vm'])) {
-            // Handle VM deletion
-            $vmName = $_POST['delete_vm'];
-            foreach ($this->servers as $server) {
-                // Assuming each server has a list of VMs
-                foreach ($server->vms as $index => $vm) {
-                    if ($vm->name === $vmName) {
-                        // Deallocate resources
-                        $server->used_cpu -= $vm->cpu;
-                        $server->used_ram -= $vm->ram;
-                        $server->used_ssd -= $vm->ssd;
-                        // Remove VM from the server
-                        unset($server->vms[$index]);
-                        return true;
-                    }
-                }
-            }
-            return false;
-            $response['message'] = "VM $vmName deleted successfully.";
-        } else if (isset($_POST['cpu']) && isset($_POST['ram']) && isset($_POST['ssd'])) {
-            // Existing VM creation logic
-        } else {
-            $response['message'] = "Invalid input.";
-        }
-    } catch (Exception $e) {
-        $response['message'] = "An error occurred: " . $e->getMessage();
-    }
-    echo json_encode($response);
-    exit();
-}
 }
 ?>
 
@@ -254,72 +244,97 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
     document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('vmForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const cpu = parseInt(document.getElementById('cpu').value);
-            const ram = parseInt(document.getElementById('ram').value);
-            const ssd = parseInt(document.getElementById('ssd').value);
+    document.getElementById('vmForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const cpu = parseInt(document.getElementById('cpu').value);
+        const ram = parseInt(document.getElementById('ram').value);
+        const ssd = parseInt(document.getElementById('ssd').value);
 
-            fetch('index.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: `cpu=${cpu}&ram=${ram}&ssd=${ssd}`
-            })
-            .then(response => response.json())
-            .then(data => {
-                const resultMessageElement = document.getElementById('resultMessage');
-                const totalRevenueElement = document.getElementById('total_revenue');
-                const availableResourcesElement = document.getElementById('available_resources');
+        fetch('index.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `cpu=${cpu}&ram=${ram}&ssd=${ssd}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            const resultMessageElement = document.getElementById('resultMessage');
+            const totalRevenueElement = document.getElementById('total_revenue');
+            const availableResourcesElement = document.getElementById('available_resources');
 
-                resultMessageElement.innerText += data.message + '\n';
-                if (data.total_revenue) {
-                    totalRevenueElement.innerText = `Total Revenue: ${data.total_revenue} CHF`;
+            resultMessageElement.innerText += data.message + '\n';
+            if (data.total_revenue) {
+                totalRevenueElement.innerText = `Total Revenue: ${data.total_revenue} CHF`;
+            }
+            if (data.available_resources) {
+                let resourcesMessage = 'Available Resources:\n';
+                for (const [server, resources] of Object.entries(data.available_resources)) {
+                    resourcesMessage += `${server}: CPU: ${resources.cpu}, RAM: ${resources.ram}, SSD: ${resources.ssd}\n`;
                 }
-                if (data.available_resources) {
-                    let resourcesMessage = 'Available Resources:\n';
-                    for (const [server, resources] of Object.entries(data.available_resources)) {
-                        resourcesMessage += `${server}: CPU: ${resources.cpu}, RAM: ${resources.ram}, SSD: ${resources.ssd}\n`;
-                    }
-                    availableResourcesElement.innerText = resourcesMessage;
-                }
+                availableResourcesElement.innerText = resourcesMessage;
+            }
 
-                // Append the new VM information to the existing list
-                const vmListElement = document.getElementById('vm_list');
-                const newVmElement = document.createElement('div');
-                newVmElement.innerHTML = `VM: CPU: ${cpu}, RAM: ${ram}, SSD: ${ssd} <button class="delete-vm">Delete</button>`;
-                vmListElement.appendChild(newVmElement);
+            // Append the new VM information to the existing list
+            const vmListElement = document.getElementById('vm_list');
+            const newVmElement = document.createElement('div');
+            const vmName = `VM-${Date.now()}`; // Generate a unique VM name
+            newVmElement.innerHTML = `VM: CPU: ${cpu}, RAM: ${ram}, SSD: ${ssd} <button class="delete-vm" data-vm-name="${vmName}">Delete</button>`;
+            vmListElement.appendChild(newVmElement);
 
-                // Add event listener to the delete button
-                newVmElement.querySelector('.delete-vm').addEventListener('click', function() {
+            // Add event listener to the delete button
+            newVmElement.querySelector('.delete-vm').addEventListener('click', function() {
+                const vmName = this.getAttribute('data-vm-name');
+                fetch('index.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `delete_vm=${vmName}`
+                })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('resultMessage').innerText += data.message + '\n';
                     vmListElement.removeChild(newVmElement);
                     // Update server resources and total revenue here
+                    const totalRevenueElement = document.getElementById('total_revenue');
+                    const availableResourcesElement = document.getElementById('available_resources');
+
+                    // Fetch updated resources and revenue
+                    fetch('index.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: 'get_resources=true'
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.total_revenue) {
+                            totalRevenueElement.innerText = `Total Revenue: ${data.total_revenue} CHF`;
+                        }
+                        if (data.available_resources) {
+                            let resourcesMessage = 'Available Resources:\n';
+                            for (const [server, resources] of Object.entries(data.available_resources)) {
+                                resourcesMessage += `${server}: CPU: ${resources.cpu}, RAM: ${resources.ram}, SSD: ${resources.ssd}\n`;
+                            }
+                            availableResourcesElement.innerText = resourcesMessage;
+                        }
+                    })
+                    .catch(error => {
+                        document.getElementById('resultMessage').innerText += `An error occurred: ${error}\n`;
+                    });
+                })
+                .catch(error => {
+                    document.getElementById('resultMessage').innerText += `An error occurred: ${error}\n`;
                 });
-            })
-            .catch(error => {
-                document.getElementById('resultMessage').innerText += `An error occurred: ${error}\n`;
             });
+        })
+        .catch(error => {
+            document.getElementById('resultMessage').innerText += `An error occurred: ${error}\n`;
         });
-        newVmElement.querySelector('.delete-vm').addEventListener('click', function() {
-    fetch('index.php', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: `delete_vm=${vmName}`
-    })
-    .then(response => response.json())
-    .then(data => {
-        document.getElementById('resultMessage').innerText += data.message + '\n';
-        vmListElement.removeChild(newVmElement);
-        // Update server resources and total revenue here
-    })
-    .catch(error => {
-        document.getElementById('resultMessage').innerText += `An error occurred: ${error}\n`;
     });
 });
-    });
 </script>
 </head>
 <body class="bg-neutral-200 dark:bg-neutral-900 text-white font-sans flex flex-col min-h-screen">
