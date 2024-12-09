@@ -90,7 +90,7 @@
         $ram = intval($_POST['ram']);
         $ssd = intval($_POST['ssd']);
         $vmName = "VM-" . uniqid();
-
+        
         $vm = new VM($vmName, $cpu, $ram, $ssd);
         $allocatedServer = $omniCloud->allocateVMToBestServer($vm);
         if ($allocatedServer) {
@@ -102,135 +102,153 @@
     ?>
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modularbeit M346</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
-    <link href="./assets/css/style.css" rel="stylesheet">
-    <link href="./assets/css/input.css" rel="stylesheet">
-    <link href="./assets/css/animate.css" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-neutral-200 dark:bg-neutral-900 text-white font-sans flex flex-col min-h-screen">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Modularbeit M346</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+        <link href="./assets/css/style.css" rel="stylesheet">
+        <link href="./assets/css/input.css" rel="stylesheet">
+        <link href="./assets/css/animate.css" rel="stylesheet">
+        <script src="https://cdn.tailwindcss.com"></script>
+    </head>
+    <body class="bg-neutral-200 dark:bg-neutral-900 text-white font-sans flex flex-col min-h-screen">
 
-    <!-- Navigation -->
-    <nav class="bg-neutral-200 dark:bg-neutral-900 p-4 w-full fixed top-0 z-10">
-        <div class="flex items-center justify-between">
-            <!-- Logo -->
-            <div class="flex-shrink-0 animate__animated animate__fadeIn animate__delay-1s">
-                <a href="#home">
-                    <img src="resources/Logo.png" alt="Logo" class="w-24 h-24">
-                </a>
-            </div>
-
-            <ul class="absolute left-1/2 transform -translate-x-1/2 flex space-x-8 text-blue-500">
-                <li><a href="#home" class="hover:text-gray-300 animate__animated animate__fadeIn animate__delay-2s">Home</a></li>
-                <li><a href="#services" class="hover:text-gray-300 animate__animated animate__fadeIn animate__delay-2s">Services</a></li>
-                <li><a href="#about" class="hover:text-gray-300 animate__animated animate__fadeIn animate__delay-2s">About</a></li>
-                <li><a href="#contact" class="hover:text-gray-300 animate__animated animate__fadeIn animate__delay-2s">Contact</a></li>
-            </ul>
-        </div>
-    </nav>
-
-    <!-- Main Content -->
-    <main class="container mx-auto p-6 text-center flex-grow pt-[10%] md:pt-[15%]">
-        <div class="grid gap-4">
-            <div class="flex items-center justify-center text-2xl md:text-4xl dark:text-white animate__animated animate__zoomIn">
-                <span class="mr-2 page_wave-animation__eZFdU" style="animation-delay:1800ms">💸</span>
-                <span class="page_special-text__JDcjy text-center">PREISE</span>
-            </div>
-            <p class="text-xl mt-4 animate__animated animate__fadeIn animate__delay-1s">
-                Die Firma OmniCloud ist ein innovativer neuer Player im IaaS-Cloud-
-                <br>Hyperscaler-Markt. Bestellen einer solchen VM müssen folgende
-                <br>Angaben gemacht werden.
-            </p>
-        </div>
-
-        <div class="mt-8 p-6 bg-neutral-300 dark:bg-neutral-800 rounded-lg shadow-lg animate__animated animate__fadeIn animate__delay-2s">
-        <form action="index.php" method="POST" class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-6">
-            <div class="flex-1">
-                <label for="cpu" class="block text-lg font-medium">CPU Cores:</label>
-                <div class="text-sm text-gray-500 dark:text-gray-400 mb-2">
-                    1 Core (5 CHF) <br>
-                    2 Cores (10 CHF) <br>
-                    4 Cores (18 CHF) <br>
-                    8 Cores (30 CHF) <br>
-                    16 Cores (45 CHF) <br>
-                    <br>
-                    <br>
+        <!-- Navigation -->
+        <nav class="bg-neutral-200 dark:bg-neutral-900 p-4 w-full fixed top-0 z-10">
+            <div class="flex items-center justify-between">
+                <!-- Logo -->
+                <div class="flex-shrink-0 animate__animated animate__fadeIn animate__delay-1s">
+                    <a href="#home">
+                        <img src="resources/Logo.png" alt="Logo" class="w-24 h-24">
+                    </a>
                 </div>
-                <select name="cpu" id="cpu" class="w-full p-2 bg-neutral-200 dark:bg-neutral-900 rounded-md animate__animated animate__fadeIn">
-                    <option value="1">1 Core</option>
-                    <option value="2">2 Cores</option>
-                    <option value="4">4 Cores</option>
-                    <option value="8">8 Cores</option>
-                    <option value="16">16 Cores</option>
-                </select>
-            </div>
 
-            <div class="flex-1">
-                <label for="ram" class="block text-lg font-medium mt-4 md:mt-0">RAM (MB):</label>
-                <div class="text-sm text-gray-500 dark:text-gray-400 mb-2">
-                    512 MB (5 CHF) <br>
-                    1,024 MB (10 CHF) <br>
-                    2,048 MB (20 CHF) <br>
-                    4,096 MB (40 CHF) <br>
-                    8,192 MB (80 CHF) <br>
-                    16,384 MB (160 CHF) <br>
-                    32,768 MB (320 CHF)
+                <ul class="absolute left-1/2 transform -translate-x-1/2 flex space-x-8 text-blue-500">
+                    <li><a href="#home" class="hover:text-gray-300 animate__animated animate__fadeIn animate__delay-2s">Home</a></li>
+                    <li><a href="#services" class="hover:text-gray-300 animate__animated animate__fadeIn animate__delay-2s">Services</a></li>
+                    <li><a href="#about" class="hover:text-gray-300 animate__animated animate__fadeIn animate__delay-2s">About</a></li>
+                    <li><a href="#contact" class="hover:text-gray-300 animate__animated animate__fadeIn animate__delay-2s">Contact</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="container mx-auto p-6 text-center flex-grow pt-[10%] md:pt-[15%]">
+            <div class="grid gap-4">
+                <div class="flex items-center justify-center text-2xl md:text-4xl dark:text-white animate__animated animate__zoomIn">
+                    <span class="mr-2 page_wave-animation__eZFdU" style="animation-delay:1800ms">💸</span>
+                    <span class="page_special-text__JDcjy text-center">PREISE</span>
                 </div>
-                <select name="ram" id="ram" class="w-full p-2 bg-neutral-200 dark:bg-neutral-900 rounded-md animate__animated animate__fadeIn animate__delay-1s">
-                    <option value="512">512 MB</option>
-                    <option value="1024">1,024 MB</option>
-                    <option value="2048">2,048 MB</option>
-                    <option value="4096">4,096 MB</option>
-                    <option value="8192">8,192 MB</option>
-                    <option value="16384">16,384 MB</option>
-                    <option value="32768">32,768 MB</option>
-                </select>
-                <div class="flex items-end mt-4 md:mt-0">
-                    <button type="submit" class="w-full py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">Provision VM</button>
+                <p class="text-xl mt-4 animate__animated animate__fadeIn animate__delay-1s">
+                    Die Firma OmniCloud ist ein innovativer neuer Player im IaaS-Cloud-
+                    <br>Hyperscaler-Markt. Bestellen einer solchen VM müssen folgende
+                    <br>Angaben gemacht werden.
+                </p>
+            </div>
+
+            <div class="mt-8 p-6 bg-neutral-300 dark:bg-neutral-800 rounded-lg shadow-lg animate__animated animate__fadeIn animate__delay-2s">
+            <form id="vmForm" action="index.php" method="POST" class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-6">
+                <div class="flex-1">
+                    <label for="cpu" class="block text-lg font-medium">CPU Cores:</label>
+                    <div class="text-sm text-gray-500 dark:text-gray-400 mb-2">
+                        1 Core (5 CHF) <br>
+                        2 Cores (10 CHF) <br>
+                        4 Cores (18 CHF) <br>
+                        8 Cores (30 CHF) <br>
+                        16 Cores (45 CHF) <br>
+                        <br>
+                        <br>
+                    </div>
+                    <select name="cpu" id="cpu" class="w-full p-2 bg-neutral-200 dark:bg-neutral-900 rounded-md animate__animated animate__fadeIn">
+                        <option value="1">1 Core</option>
+                        <option value="2">2 Cores</option>
+                        <option value="4">4 Cores</option>
+                        <option value="8">8 Cores</option>
+                        <option value="16">16 Cores</option>
+                    </select>
                 </div>
-            </div>
 
-            <div class="flex-1">
-                <label for="ssd" class="block text-lg font-medium mt-4 md:mt-0">SSD Storage (GB):</label>
-                <div class="text-sm text-gray-500 dark:text-gray-400 mb-2">
-                    10 GB (5 CHF) <br>
-                    20 GB (10 CHF) <br>
-                    40 GB (20 CHF) <br>
-                    80 GB (40 CHF) <br>
-                    240 GB (120 CHF) <br>
-                    500 GB (250 CHF) <br>
-                    1000 GB (500 CHF)
+                <div class="flex-1">
+                    <label for="ram" class="block text-lg font-medium mt-4 md:mt-0">RAM (MB):</label>
+                    <div class="text-sm text-gray-500 dark:text-gray-400 mb-2">
+                        512 MB (5 CHF) <br>
+                        1,024 MB (10 CHF) <br>
+                        2,048 MB (20 CHF) <br>
+                        4,096 MB (40 CHF) <br>
+                        8,192 MB (80 CHF) <br>
+                        16,384 MB (160 CHF) <br>
+                        32,768 MB (320 CHF)
+                    </div>
+                    <select name="ram" id="ram" class="w-full p-2 bg-neutral-200 dark:bg-neutral-900 rounded-md animate__animated animate__fadeIn animate__delay-1s">
+                        <option value="512">512 MB</option>
+                        <option value="1024">1,024 MB</option>
+                        <option value="2048">2,048 MB</option>
+                        <option value="4096">4,096 MB</option>
+                        <option value="8192">8,192 MB</option>
+                        <option value="16384">16,384 MB</option>
+                        <option value="32768">32,768 MB</option>
+                    </select>
+                    <div class="flex items-end mt-4 md:mt-0">
+                        <button type="submit" class="w-full py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">Provision VM</button>
+                    </div>
                 </div>
-                <select name="ssd" id="ssd" class="w-full p-2 bg-neutral-200 dark:bg-neutral-900 rounded-md animate__animated animate__fadeIn animate__delay-2s">
-                    <option value="10">10 GB</option>
-                    <option value="20">20 GB</option>
-                    <option value="40">40 GB</option>
-                    <option value="80">80 GB</option>
-                    <option value="240">240 GB</option>
-                    <option value="500">500 GB</option>
-                    <option value="1000">1000 GB</option>
-                </select>
-            </div>
-        </form>
-        <!-- Result Message -->
-        <?php if (!empty($message)): ?>
-            <div class="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-blue-500 text-white px-4 py-2 rounded shadow-lg">
-                <?php echo htmlspecialchars($message); ?>
-            </div>
-        <?php endif; ?>
-    </main>
 
-    <!-- Footer -->
-    <footer class="bg-neutral-200 dark:bg-neutral-900 text-white text-center py-4 w-full animate__animated animate__fadeIn animate__delay-4s">
-        <p>&copy; 2024 Modularbeit M346 | All rights reserved.</p>
-    </footer>
+                <div class="flex-1">
+                    <label for="ssd" class="block text-lg font-medium mt-4 md:mt-0">SSD Storage (GB):</label>
+                    <div class="text-sm text-gray-500 dark:text-gray-400 mb-2">
+                        10 GB (5 CHF) <br>
+                        20 GB (10 CHF) <br>
+                        40 GB (20 CHF) <br>
+                        80 GB (40 CHF) <br>
+                        240 GB (120 CHF) <br>
+                        500 GB (250 CHF) <br>
+                        1000 GB (500 CHF)
+                    </div>
+                    <select name="ssd" id="ssd" class="w-full p-2 bg-neutral-200 dark:bg-neutral-900 rounded-md animate__animated animate__fadeIn animate__delay-2s">
+                        <option value="10">10 GB</option>
+                        <option value="20">20 GB</option>
+                        <option value="40">40 GB</option>
+                        <option value="80">80 GB</option>
+                        <option value="240">240 GB</option>
+                        <option value="500">500 GB</option>
+                        <option value="1000">1000 GB</option>
+                    </select>
+                </div>
+            </form>
+            <div id="message" class="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-blue-500 text-white px-4 py-2 rounded shadow-lg" style="display: none;"></div>
+        </main>
 
-</body>
+        <!-- Footer -->
+        <footer class="bg-neutral-200 dark:bg-neutral-900 text-white text-center py-4 w-full animate__animated animate__fadeIn animate__delay-4s">
+            <p>&copy; 2024 Modularbeit M346 | All rights reserved.</p>
+        </footer>
+        
+
+
+        <script>
+            document.getElementById('vmForm').addEventListener('submit', function (event) {
+                event.preventDefault(); // Prevent the default form submission
+
+                const formData = new FormData(this);
+                fetch('index.php', {
+                    method: 'POST',
+                    body: formData,
+                })
+                .then(response => response.text())
+                .then(data => {
+                    const messageElement = document.getElementById('message');
+                    messageElement.textContent = data;
+                    messageElement.style.display = 'block';
+                    setTimeout(() => {
+                        messageElement.style.display = 'none';
+                    }, 5000); // Hide message after 5 seconds
+                })
+                .catch(error => console.error('Error:', error));
+            });
+        </script>
+    </body>
 </html>
