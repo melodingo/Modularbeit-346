@@ -43,20 +43,25 @@ class Server {
             $this->used_cpu += $vm->cpu;
             $this->used_ram += $vm->ram;
             $this->used_ssd += $vm->ssd;
-            $this->vms[] = $vm; // Add VM to the list
-            $this->logVMChange("Added", $vm); // Log the addition
+            $this->vms[] = $vm; 
+            $this->logVMChange("Added", $vm); 
             return true;
         }
         return false;
     }
 
     public function getAvailableResources() {
+        $this->total_cpu = $this->total_cpu - $this->used_cpu;
+        $this->total_ram = $this->total_ram - $this->used_ram;
+        $this->total_ssd = $this->total_ssd - $this->used_ssd;
+
         return [
-            'cpu' => $this->total_cpu - $this->used_cpu,
-            'ram' => $this->total_ram - $this->used_ram,
-            'ssd' => $this->total_ssd - $this->used_ssd,
+            'cpu' => $this->total_cpu,
+            'ram' => $this->total_ram,
+            'ssd' => $this->total_ssd,
         ];
     }
+
 
     public function getTotalRevenue() {
         // Assuming each VM has a price attribute
