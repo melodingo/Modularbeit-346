@@ -151,7 +151,7 @@
         </div>
 
         <div class="mt-8 p-6 bg-neutral-300 dark:bg-neutral-800 rounded-lg shadow-lg animate__animated animate__fadeIn animate__delay-2s">
-        <form action="/php/index.php" method="POST" class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-6">
+        <form action="index.php" method="POST" class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-6">
             <div class="flex-1">
                 <label for="cpu" class="block text-lg font-medium">CPU Cores:</label>
                 <div class="text-sm text-gray-500 dark:text-gray-400 mb-2">
@@ -218,7 +218,13 @@
                     <option value="1000">1000 GB</option>
                 </select>
             </div>
-        </form>   
+        </form>
+        <!-- Result Message -->
+        <?php if (!empty($message)): ?>
+            <div class="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-blue-500 text-white px-4 py-2 rounded shadow-lg">
+                <?php echo htmlspecialchars($message); ?>
+            </div>
+        <?php endif; ?>
     </main>
 
     <!-- Footer -->
