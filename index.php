@@ -20,10 +20,9 @@ class Server {
     private $total_cpu;
     private $total_ram;
     private $total_ssd;
-    public $used_cpu = 0;
-    public $used_ram = 0;
-    public $used_ssd = 0;
-    private $vms = [];
+    private $used_cpu = 0;
+    private $used_ram = 0;
+    private $used_ssd = 0;
 
     public function __construct($name, $cpu, $ram, $ssd) {
         $this->name = $name;
@@ -33,42 +32,32 @@ class Server {
     }
 
     public function canAllocate(VM $vm) {
-        return ($this->total_cpu - $this->used_cpu >= $vm->cpu) &&
-               ($this->total_ram - $this->used_ram >= $vm->ram) &&
-               ($this->total_ssd - $this->used_ssd >= $vm->ssd);
+        return $this->total_cpu - $this->used_cpu >= $vm->cpu &&
+               $this->total_ram - $this->used_ram >= $vm->ram &&
+               $this->total_ssd - $this->used_ssd >= $vm->ssd;
     }
 
-    public function allocateVM(VM $vm) {
+    public function allocate(VM $vm) {
         if ($this->canAllocate($vm)) {
             $this->used_cpu += $vm->cpu;
             $this->used_ram += $vm->ram;
             $this->used_ssd += $vm->ssd;
-            $this->vms[$vm->name] = $vm;
             return true;
         }
         return false;
     }
 
-    public function hasVM($vmName) {
-        return isset($this->vms[$vmName]);
-    }
-
-    public function removeVM($vmName) {
-        if ($this->hasVM($vmName)) {
-            $vm = $this->vms[$vmName];
-            $this->used_cpu -= $vm->cpu;
-            $this->used_ram -= $vm->ram;
-            $this->used_ssd -= $vm->ssd;
-            unset($this->vms[$vmName]);
-        }
+    public function getAvailableResources() {
+        return [
+            'cpu' => $this->total_cpu - $this->used_cpu,
+            'ram' => $this->total_ram - $this->used_ram,
+            'ssd' => $this->total_ssd - $this->used_ssd,
+        ];
     }
 
     public function getTotalRevenue() {
-        $totalRevenue = 0;
-        foreach ($this->vms as $vm) {
-            $totalRevenue += $vm->price;
-        }
-        return $totalRevenue;
+        // Assuming each VM has a price attribute
+        return $this->used_cpu * 5 + $this->used_ram * 0.1 + $this->used_ssd * 0.05;
     }
 }
 
@@ -80,35 +69,9 @@ class OmniCloud {
     }
 
     public function allocateVMToBestServer(VM $vm) {
-        // Check if any server has enough resources
-        $suitableServers = array_filter($this->servers, function($server) use ($vm) {
-            return $server->canAllocate($vm);
-        });
-
-        if (empty($suitableServers)) {
-            return false; // No server can allocate the VM
-        }
-
-        // Sort servers by their current resource usage
-        usort($suitableServers, function($a, $b) {
-            return ($a->used_cpu + $a->used_ram + $a->used_ssd) <=> ($b->used_cpu + $b->used_ram + $b->used_ssd);
-        });
-
-        // Allocate VM to the best server
-        foreach ($suitableServers as $server) {
-            if ($server->allocateVM($vm)) {
-                return $server->name;
-            }
-        }
-
-        return false;
-    }
-
-    public function removeVMFromServer($vmName) {
         foreach ($this->servers as $server) {
-            if ($server->hasVM($vmName)) {
-                $server->removeVM($vmName);
-                return true;
+            if ($server->allocate($vm)) {
+                return $server->name;
             }
         }
         return false;
@@ -121,6 +84,10 @@ class OmniCloud {
         }
         return $totalRevenue;
     }
+
+    public function getServers() {
+        return $this->servers;
+    }
 }
 
 // Define servers
@@ -132,96 +99,105 @@ $omniCloud = new OmniCloud([$smallServer, $mediumServer, $bigServer]);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header('Content-Type: application/json');
-    ob_start(); // Start output buffering
     $response = ['message' => ''];
 
-    if (isset($_POST['cpu']) && isset($_POST['ram']) && isset($_POST['ssd'])) {
-        $cpu = intval($_POST['cpu']);
-        $ram = intval($_POST['ram']);
-        $ssd = intval($_POST['ssd']);
-        $vmName = "VM-" . uniqid();
+    try {
+        if (isset($_POST['cpu']) && isset($_POST['ram']) && isset($_POST['ssd'])) {
+            $cpu = intval($_POST['cpu']);
+            $ram = intval($_POST['ram']);
+            $ssd = intval($_POST['ssd']);
+            $vmName = "VM-" . uniqid();
 
-        // Define costs based on the form options
-        $cpuCost = 0;
-        $ramCost = 0;
-        $ssdCost = 0;
+            // Define costs based on the form options
+            $cpuCost = 0;
+            $ramCost = 0;
+            $ssdCost = 0;
 
-        switch ($cpu) {
-            case 1:
-                $cpuCost = 5;
-                break;
-            case 2:
-                $cpuCost = 10;
-                break;
-            case 4:
-                $cpuCost = 18;
-                break;
-            case 8:
-                $cpuCost = 30;
-                break;
-            case 16:
-                $cpuCost = 45;
-                break;
-        }
+            switch ($cpu) {
+                case 1:
+                    $cpuCost = 5;
+                    break;
+                case 2:
+                    $cpuCost = 10;
+                    break;
+                case 4:
+                    $cpuCost = 18;
+                    break;
+                case 8:
+                    $cpuCost = 30;
+                    break;
+                case 16:
+                    $cpuCost = 45;
+                    break;
+            }
 
-        switch ($ram) {
-            case 512:
-                $ramCost = 5;
-                break;
-            case 1024:
-                $ramCost = 10;
-                break;
-            case 2048:
-                $ramCost = 20;
-                break;
-            case 4096:
-                $ramCost = 40;
-                break;
-            case 8192:
-                $ramCost = 80;
-                break;
-            case 16384:
-                $ramCost = 160;
-                break;
-            case 32768:
-                $ramCost = 320;
-                break;
-        }
+            switch ($ram) {
+                case 512:
+                    $ramCost = 5;
+                    break;
+                case 1024:
+                    $ramCost = 10;
+                    break;
+                case 2048:
+                    $ramCost = 20;
+                    break;
+                case 4096:
+                    $ramCost = 40;
+                    break;
+                case 8192:
+                    $ramCost = 80;
+                    break;
+                case 16384:
+                    $ramCost = 160;
+                    break;
+                case 32768:
+                    $ramCost = 320;
+                    break;
+            }
 
-        switch ($ssd) {
-            case 20:
-                $ssdCost = 5;
-                break;
-            case 40:
-                $ssdCost = 10;
-                break;
-            case 80:
-                $ssdCost = 20;
-                break;
-            case 240:
-                $ssdCost = 60;
-                break;
-            case 500:
-                $ssdCost = 125;
-                break;
-            case 1000:
-                $ssdCost = 250;
-                break;
-        }
+            switch ($ssd) {
+                case 20:
+                    $ssdCost = 5;
+                    break;
+                case 40:
+                    $ssdCost = 10;
+                    break;
+                case 80:
+                    $ssdCost = 20;
+                    break;
+                case 240:
+                    $ssdCost = 60;
+                    break;
+                case 500:
+                    $ssdCost = 125;
+                    break;
+                case 1000:
+                    $ssdCost = 250;
+                    break;
+            }
 
-        $vm = new VM($vmName, $cpu, $ram, $ssd, $cpuCost, $ramCost, $ssdCost);
-        $allocatedServer = $omniCloud->allocateVMToBestServer($vm);
-        if ($allocatedServer) {
-            $response['message'] = "VM provisioned successfully on server: $allocatedServer. VM Price: " . $vm->price . " CHF";
-            $response['total_revenue'] = $omniCloud->getTotalRevenue();
+            $vm = new VM($vmName, $cpu, $ram, $ssd, $cpuCost, $ramCost, $ssdCost);
+            $allocatedServer = $omniCloud->allocateVMToBestServer($vm);
+            if ($allocatedServer) {
+                $response['message'] = "VM provisioned successfully on server: $allocatedServer. VM Price: " . $vm->price . " CHF";
+                $response['total_revenue'] = $omniCloud->getTotalRevenue();
+            } else {
+                $response['message'] = "No server has enough resources to allocate the VM.";
+            }
+
+            // Add available resources to the response
+            $response['available_resources'] = [];
+            foreach ($omniCloud->getServers() as $server) {
+                $response['available_resources'][$server->name] = $server->getAvailableResources();
+            }
         } else {
-            $response['message'] = "No server has enough resources to allocate the VM.";
+            $response['message'] = "Invalid input.";
         }
+    } catch (Exception $e) {
+        $response['message'] = "An error occurred: " . $e->getMessage();
     }
-
-    ob_end_clean(); // Clean the output buffer
     echo json_encode($response);
-    exit(); // Ensure no further output is sent
+    exit();
 }
 ?>
 
@@ -239,14 +215,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link href="assets/css/input.css" rel="stylesheet">
     <link href="assets/css/animate.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        function provisionVM(event) {
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('vmForm').addEventListener('submit', function(event) {
             event.preventDefault();
-            const cpu = document.getElementById('cpu').value;
-            const ram = document.getElementById('ram').value;
-            const ssd = document.getElementById('ssd').value;
+            const cpu = parseInt(document.getElementById('cpu').value);
+            const ram = parseInt(document.getElementById('ram').value);
+            const ssd = parseInt(document.getElementById('ssd').value);
 
-            fetch('', {
+            fetch('index.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
@@ -255,13 +232,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             })
             .then(response => response.json())
             .then(data => {
-                document.getElementById('message').innerText = data.message;
+                const resultMessageElement = document.getElementById('resultMessage');
+                const totalRevenueElement = document.getElementById('total_revenue');
+                const availableResourcesElement = document.getElementById('available_resources');
+
+                resultMessageElement.innerText += data.message + '\n';
                 if (data.total_revenue) {
-                    document.getElementById('total_revenue').innerText = `Total Revenue: $${data.total_revenue}`;
+                    totalRevenueElement.innerText = `Total Revenue: ${data.total_revenue} CHF`;
                 }
+                if (data.available_resources) {
+                    let resourcesMessage = 'Available Resources:\n';
+                    for (const [server, resources] of Object.entries(data.available_resources)) {
+                        resourcesMessage += `${server}: CPU: ${resources.cpu}, RAM: ${resources.ram}, SSD: ${resources.ssd}\n`;
+                    }
+                    availableResourcesElement.innerText = resourcesMessage;
+                }
+
+                // Append the new VM information to the existing list
+                const vmListElement = document.getElementById('vm_list');
+                const newVmElement = document.createElement('div');
+                newVmElement.innerText = `VM: CPU: ${cpu}, RAM: ${ram}, SSD: ${ssd}`;
+                vmListElement.appendChild(newVmElement);
+            })
+            .catch(error => {
+                document.getElementById('resultMessage').innerText += `An error occurred: ${error}\n`;
             });
-        }
-    </script>
+        });
+    });
+</script>
 </head>
 <body class="bg-neutral-200 dark:bg-neutral-900 text-white font-sans flex flex-col min-h-screen">
 
@@ -367,6 +365,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
 
         <div id="resultMessage" class="mt-4"></div>
+        <div id="total_revenue" class="mt-4"></div>
+        <div id="available_resources" class="mt-4"></div>
+        <div id="vm_list" class="mt-4"></div>
     </main>
 
     <script>
