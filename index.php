@@ -102,6 +102,49 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $response = ['message' => ''];
 
     try {
+        if (isset($_POST['delete_vm'])) {
+            // Handle VM deletion
+            $vmName = $_POST['delete_vm'];
+            // Logic to find and delete the VM from the server
+            // Assuming we have a method to find the VM and its server
+            $vm = findVMByName($vmName);
+            if ($vm) {
+                $server = findServerByVM($vm);
+                if ($server) {
+                    $server -> deallocate($vm);
+                    $response['message'] = "VM $vmName deleted successfully.";
+                    $response['total_revenue'] = $omniCloud->getTotalRevenue();
+                    $response['available_resources'] = [];
+                    foreach ($omniCloud->getServers() as $server) {
+                        $response['available_resources'][$server->name] = $server->getAvailableResources();
+                    }
+                } else {
+                    $response['message'] = "Server not found for VM $vmName.";
+                }
+            } else {
+                $response['message'] = "VM $vmName not found.";
+            }
+        } else if (isset($_POST['cpu']) && isset($_POST['ram']) && isset($_POST['ssd'])) {
+            // Existing VM creation logic
+        } else {
+            $response['message'] = "Invalid input.";
+        }
+    } catch (Exception $e) {
+        $response['message'] = "An error occurred: " . $e->getMessage();
+    }
+    echo json_encode($response);
+    exit();
+}
+
+function findVMByName($vmName) {
+    // Implement logic to find the VM by its name
+}
+
+function findServerByVM($vm) {
+    // Implement logic to find the server that hosts the VM
+}
+
+    try {
         if (isset($_POST['cpu']) && isset($_POST['ram']) && isset($_POST['ssd'])) {
             $cpu = intval($_POST['cpu']);
             $ram = intval($_POST['ram']);
@@ -198,7 +241,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     echo json_encode($response);
     exit();
+
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    header('Content-Type: application/json');
+    $response = ['message' => ''];
+
+    try {
+        if (isset($_POST['delete_vm'])) {
+            // Handle VM deletion
+            $vmName = $_POST['delete_vm'];
+            // Logic to find and delete the VM from the server
+            // Update server resources and total revenue
+            $response['message'] = "VM $vmName deleted successfully.";
+        } else if (isset($_POST['cpu']) && isset($_POST['ram']) && isset($_POST['ssd'])) {
+            // Existing VM creation logic
+        } else {
+            $response['message'] = "Invalid input.";
+        }
+    } catch (Exception $e) {
+        $response['message'] = "An error occurred: " . $e->getMessage();
+    }
+    echo json_encode($response);
+    exit();
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -215,50 +282,80 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link href="assets/css/input.css" rel="stylesheet">
     <link href="assets/css/animate.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
+    <script>
     document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('vmForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const cpu = parseInt(document.getElementById('cpu').value);
-            const ram = parseInt(document.getElementById('ram').value);
-            const ssd = parseInt(document.getElementById('ssd').value);
+    document.getElementById('vmForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const cpu = parseInt(document.getElementById('cpu').value);
+        const ram = parseInt(document.getElementById('ram').value);
+        const ssd = parseInt(document.getElementById('ssd').value);
 
-            fetch('index.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: `cpu=${cpu}&ram=${ram}&ssd=${ssd}`
-            })
-            .then(response => response.json())
-            .then(data => {
-                const resultMessageElement = document.getElementById('resultMessage');
-                const totalRevenueElement = document.getElementById('total_revenue');
-                const availableResourcesElement = document.getElementById('available_resources');
+        fetch('index.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `cpu=${cpu}&ram=${ram}&ssd=${ssd}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            const resultMessageElement = document.getElementById('resultMessage');
+            const totalRevenueElement = document.getElementById('total_revenue');
+            const availableResourcesElement = document.getElementById('available_resources');
 
-                resultMessageElement.innerText += data.message + '\n';
-                if (data.total_revenue) {
-                    totalRevenueElement.innerText = `Total Revenue: ${data.total_revenue} CHF`;
+            resultMessageElement.innerText += data.message + '\n';
+            if (data.total_revenue) {
+                totalRevenueElement.innerText = `Total Revenue: ${data.total_revenue} CHF`;
+            }
+            if (data.available_resources) {
+                let resourcesMessage = 'Available Resources:\n';
+                for (const [server, resources] of Object.entries(data.available_resources)) {
+                    resourcesMessage += `${server}: CPU: ${resources.cpu}, RAM: ${resources.ram}, SSD: ${resources.ssd}\n`;
                 }
-                if (data.available_resources) {
-                    let resourcesMessage = 'Available Resources:\n';
-                    for (const [server, resources] of Object.entries(data.available_resources)) {
-                        resourcesMessage += `${server}: CPU: ${resources.cpu}, RAM: ${resources.ram}, SSD: ${resources.ssd}\n`;
+                availableResourcesElement.innerText = resourcesMessage;
+            }
+
+            // Append the new VM information to the existing list
+            const vmListElement = document.getElementById('vm_list');
+            const newVmElement = document.createElement('div');
+            const vmName = `VM-${Date.now()}`; // Generate a unique VM name
+            newVmElement.innerHTML = `VM: CPU: ${cpu}, RAM: ${ram}, SSD: ${ssd} <button class="delete-vm" data-vm-name="${vmName}">Delete</button>`;
+            vmListElement.appendChild(newVmElement);
+
+            // Add event listener to the delete button
+            newVmElement.querySelector('.delete-vm').addEventListener('click', function() {
+                fetch('index.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `delete_vm=${vmName}`
+                })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('resultMessage').innerText += data.message + '\n';
+                    vmListElement.removeChild(newVmElement);
+                    if (data.total_revenue) {
+                        totalRevenueElement.innerText = `Total Revenue: ${data.total_revenue} CHF`;
                     }
-                    availableResourcesElement.innerText = resourcesMessage;
-                }
-
-                // Append the new VM information to the existing list
-                const vmListElement = document.getElementById('vm_list');
-                const newVmElement = document.createElement('div');
-                newVmElement.innerText = `VM: CPU: ${cpu}, RAM: ${ram}, SSD: ${ssd}`;
-                vmListElement.appendChild(newVmElement);
-            })
-            .catch(error => {
-                document.getElementById('resultMessage').innerText += `An error occurred: ${error}\n`;
+                    if (data.available_resources) {
+                        let resourcesMessage = 'Available Resources:\n';
+                        for (const [server, resources] of Object.entries(data.available_resources)) {
+                            resourcesMessage += `${server}: CPU: ${resources.cpu}, RAM: ${resources.ram}, SSD: ${resources.ssd}\n`;
+                        }
+                        availableResourcesElement.innerText = resourcesMessage;
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('resultMessage').innerText += `An error occurred: ${error}\n`;
+                });
             });
+        })
+        .catch(error => {
+            document.getElementById('resultMessage').innerText += `An error occurred: ${error}\n`;
         });
     });
+});
 </script>
 </head>
 <body class="bg-neutral-200 dark:bg-neutral-900 text-white font-sans flex flex-col min-h-screen">
@@ -307,6 +404,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         4 Cores (18 CHF) <br>
                         8 Cores (30 CHF) <br>
                         16 Cores (45 CHF) <br>
+                        <br>
+                        <br>
+
                     </div>
                     <select name="cpu" id="cpu" class="w-full p-2 bg-neutral-200 dark:bg-neutral-900 rounded-md animate__animated animate__fadeIn">
                         <option value="1">1 Core</option>
@@ -337,6 +437,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <option value="16384">16,384 MB</option>
                         <option value="32768">32,768 MB</option>
                     </select>
+                    <button type="submit" class="w-full py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 mt-4 animate__animated animate__fadeIn animate__delay-3s">Provision VM</button>
                 </div>
 
                 <div class="flex-1">
@@ -360,7 +461,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <option value="1000">1000 GB</option>
                     </select>
                 </div>
-                <button type="submit" class="w-full py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 mt-4 animate__animated animate__fadeIn animate__delay-3s">Provision VM</button>
+                
             </form>
         </div>
 
