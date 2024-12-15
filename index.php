@@ -23,7 +23,7 @@ class Server {
     private $used_cpu = 0;
     private $used_ram = 0;
     private $used_ssd = 0;
-    public $vms = []; // Add this line to keep track of VMs
+    public $vms = []; 
 
     public function __construct($name, $cpu, $ram, $ssd) {
         $this->name = $name;
@@ -64,7 +64,7 @@ class Server {
 
 
     public function getTotalRevenue() {
-        // Assuming each VM has a price attribute
+        
         return $this->used_cpu * 5 + $this->used_ram * 0.1 + $this->used_ssd * 0.05;
     }
 
@@ -110,7 +110,7 @@ class OmniCloud {
                     $server->used_ram -= $vm->ram;
                     $server->used_ssd -= $vm->ssd;
                     unset($server->vms[$index]);
-                    $server->logVMChange("Removed", $vm); // Log the removal
+                    $server->logVMChange("Removed", $vm);
                     return true;
                 }
             }
@@ -280,14 +280,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 availableResourcesElement.innerText = resourcesMessage;
             }
 
-            // Append the new VM information to the existing list
+            
             const vmListElement = document.getElementById('vm_list');
             const newVmElement = document.createElement('div');
-            const vmName = `VM-${Date.now()}`; // Generate a unique VM name
+            const vmName = `VM-${Date.now()}`; 
             newVmElement.innerHTML = `VM: CPU: ${cpu}, RAM: ${ram}, SSD: ${ssd} <button class="delete-vm" data-vm-name="${vmName}">Delete</button>`;
             vmListElement.appendChild(newVmElement);
 
-            // Add event listener to the delete button
+           
             newVmElement.querySelector('.delete-vm').addEventListener('click', function() {
                 const vmName = this.getAttribute('data-vm-name');
                 fetch('index.php', {
@@ -301,11 +301,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 .then(data => {
                     document.getElementById('resultMessage').innerText += data.message + '\n';
                     vmListElement.removeChild(newVmElement);
-                    // Update server resources and total revenue here
+                    
                     const totalRevenueElement = document.getElementById('total_revenue');
                     const availableResourcesElement = document.getElementById('available_resources');
 
-                    // Fetch updated resources and revenue
+                    
                     fetch('index.php', {
                         method: 'POST',
                         headers: {
@@ -350,12 +350,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <!-- Logo -->
             <div class="flex-shrink-0 animate__animated animate__fadeIn animate__delay-1s">
                 <a href="#home">
-                    <img src="resources/Logo.png" alt="Logo" class="w-24 h-24"> <!-- Increased logo size -->
+                    <img src="resources/Logo.png" alt="Logo" class="w-24 h-24">
                 </a>
             </div>
 
             <!-- Centered Navigation Links -->
-            <ul class="flex-1 flex justify-center space-x-8 text-blue-500">
+            <ul class="absolute left-1/2 transform -translate-x-1/2 flex space-x-8 text-blue-500">
                 <li><a href="#home" class="hover:text-gray-300 animate__animated animate__fadeIn animate__delay-2s">Home</a></li>
                 <li><a href="#services" class="hover:text-gray-300 animate__animated animate__fadeIn animate__delay-2s">Services</a></li>
                 <li><a href="#about" class="hover:text-gray-300 animate__animated animate__fadeIn animate__delay-2s">About</a></li>
@@ -449,10 +449,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </form>
         </div>
 
-        <div id="resultMessage" class="mt-4"></div>
-        <div id="total_revenue" class="mt-4"></div>
-        <div id="available_resources" class="mt-4"></div>
-        <div id="vm_list" class="mt-4"></div>
+        <div id="resultMessage" class="mt-4 animate__animated animate__fadeIn animate__delay-2s"></div>
+        <div class="info-section mt-4 animate__animated animate__fadeIn animate__delay-3s">
+            <h3>Total Revenue</h3>
+            <p id="total_revenue"></p>
+        </div>
+        <div class="info-section mt-4 animate__animated animate__fadeIn animate__delay-4s">
+            <h3>Available Resources</h3>
+            <p id="available_resources"></p>
+        </div>
+        <div class="info-section mt-4 animate__animated animate__fadeIn animate__delay-5s">
+            <h3>Virtual Machines List</h3>
+            <p id="vm_list"></p>
+        </div>
+
     </main>
 
     <script>
