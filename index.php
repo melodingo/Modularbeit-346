@@ -369,12 +369,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="grid gap-4">
             <div class="flex items-center justify-center text-2xl md:text-4xl dark:text-white animate__animated animate__zoomIn">
                 <span class="mr-2 page_wave-animation__eZFdU" style="animation-delay:1800ms">💸</span>
-                <h1 class="text-4xl md:text-5xl font-bold page_special-text__JDcjy">PREISE</h1>
+                <h1 class="text-4xl md:text-5xl font-bold page_special-text__JDcjy">PRICE</h1>
             </div>
             <p class="text-xl mt-4 animate__animated animate__fadeIn animate__delay-1s">
-                Die Firma OmniCloud ist ein innovativer neuer Player im IaaS-Cloud-
-                <br>Hyperscaler-Markt. Bestellen einer solchen VM müssen folgende
-                <br>Angaben gemacht werden.
+                OmniCloud is an innovative new player in the IaaS cloud
+                <br>hyperscaler market. To order such a VM, the following
+                <br>details must be provided.
             </p>
         </div>
 
@@ -466,23 +466,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </main>
 
     <script>
-        $(document).ready(function() {
-            $('#vmForm').on('submit', function(event) {
-                event.preventDefault();
-
-                $.ajax({
-                    url: 'index.php',
-                    type: 'POST',
-                    data: $(this).serialize(),
-                    success: function(response) {
-                        $('#resultMessage').html('<p>' + response.message + '</p>');
-                    },
-                    error: function(xhr, status, error) {
-                        $('#resultMessage').html('<p>An error occurred: ' + error + '</p>');
-                    }
-                });
-            });
-        });
     </script>
 
     <!-- Footer -->
