@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact OmniCloud</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;1,700&display=swap" rel="stylesheet">
+    <link href="/assets/css/input.css" rel="stylesheet">
+    <link href="/assets/css/style.css" rel="stylesheet">
+</head>
+<body class="bg-neutral-200 dark:bg-neutral-900 text-white font-sans flex flex-col min-h-screen">
+
+    <!-- Navigation -->
+    <nav class="bg-neutral-200 dark:bg-neutral-900 p-4 w-full fixed top-0 z-10">
+        <div class="flex items-center justify-between">
+            <!-- Logo -->
+            <div class="flex-shrink-0 animate__animated animate__fadeIn">
+                <a href="/index.php">
+                    <img src="/resources/Logo.png" alt="OmniCloud Logo" class="w-24 h-24">
+                </a>
+            </div>
+
+            <!-- Centered Navigation Links -->
+            <ul class="absolute left-1/2 transform -translate-x-1/2 flex space-x-8 text-blue-500">
+                <li><a href="/index.php" class="hover:text-gray-300">Home</a></li>
+                <li><a href="services.html" class="hover:text-gray-300">Services</a></li>
+                <li><a href="about.html" class="hover:text-gray-300">About</a></li>
+                <li><a href="Contact.html" class="hover:text-gray-300">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Contact Page Content -->
+    <main class="container mx-auto p-20 text-center flex-grow mt-20">
+        <h1 class="text-4xl md:text-5xl font-bold dark:text-white animate__animated animate__fadeIn page_special-text__JDcjy">Contact Us</h1>
+        <p class="text-lg mt-4 text-gray-300 animate__animated animate__fadeIn">
+            We’d love to hear from you! Reach out to us for inquiries, support, or feedback.
+        </p>
+
+        <div class="grid lg:grid-cols-2 gap-10 mt-10">
+            <!-- Contact Form -->
+            <form action="/submit_contact_form" method="POST" class="bg-neutral-300 dark:bg-neutral-800 p-6 rounded-lg shadow-lg animate__animated animate__fadeInLeft">
+                <h2 class="text-2xl font-semibold text-blue-400 mb-4">Send Us a Message</h2>
+                <div class="mb-4">
+                    <label for="name" class="block text-sm font-medium text-gray-400 mb-2">Your Name</label>
+                    <input type="text" id="name" name="name" required class="w-full p-3 rounded bg-neutral-200 dark:bg-neutral-700 text-gray-900 dark:text-white">
+                </div>
+                <div class="mb-4">
+                    <label for="email" class="block text-sm font-medium text-gray-400 mb-2">Your Email</label>
+                    <input type="email" id="email" name="email" required class="w-full p-3 rounded bg-neutral-200 dark:bg-neutral-700 text-gray-900 dark:text-white">
+                </div>
+                <div class="mb-4">
+                    <label for="message" class="block text-sm font-medium text-gray-400 mb-2">Message</label>
+                    <textarea id="message" name="message" rows="4" required class="w-full p-3 rounded bg-neutral-200 dark:bg-neutral-700 text-gray-900 dark:text-white"></textarea>
+                </div>
+                <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white py-3 px-6 rounded-md">
+                    Send Message
+                </button>
+            </form>
+
+            <!-- Contact Information -->
+            <div class="bg-neutral-300 dark:bg-neutral-800 p-6 rounded-lg shadow-lg animate__animated animate__fadeInRight">
+                <h2 class="text-2xl font-semibold text-blue-400 mb-4">Get in Touch</h2>
+                <p class="text-gray-400 mb-4">
+                    <strong>Email:</strong> support@omnicloud.com<br>
+                    <strong>Phone:</strong> +1 123 456 7890<br>
+                    <strong>Address:</strong> 123 Cloud Street, Tech City, TC 10101
+                </p>
+                <h2 class="text-xl font-semibold text-blue-400 mb-2">Business Hours</h2>
+                <p class="text-gray-400">
+                    Monday - Friday: 9 AM - 6 PM<br>
+                    Saturday: 10 AM - 4 PM<br>
+                    Sunday: Closed
+                </p>
+                <div class="mt-6">
+                    <iframe class="w-full h-48 rounded-lg" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3153.831054758229!2d144.95592821531858!3d-37.81720997975171!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6ad642af0f11fd81%3A0xfb3ab7e6e16d5f58!2sOmniCloud!5e0!3m2!1sen!2sus!4v1604479517989!5m2!1sen!2sus" allowfullscreen="" loading="lazy"></iframe>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-neutral-200 dark:bg-neutral-900 text-gray-500 text-center">
+        <p>&copy; 2024 OmniCloud. All rights reserved.</p>
+    </footer>
+</body>
+</html>
