@@ -348,18 +348,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <nav class="bg-neutral-200 dark:bg-neutral-900 p-4 w-full fixed top-0 z-10">
         <div class="flex items-center justify-between">
             <!-- Logo -->
-            <div class="flex-shrink-0 animate__animated animate__fadeIn animate__delay-1s">
-                <a href="#home">
-                    <img src="resources/Logo.png" alt="Logo" class="w-24 h-24">
+            <div class="flex-shrink-0 animate__animated animate__fadeIn">
+                <a href="index.php">
+                    <img src="/resources/Logo.png" alt="OmniCloud Logo" class="w-24 h-24">
                 </a>
             </div>
 
             <!-- Centered Navigation Links -->
             <ul class="absolute left-1/2 transform -translate-x-1/2 flex space-x-8 text-blue-500">
-                <li><a href="#home" class="hover:text-gray-300 animate__animated animate__fadeIn animate__delay-2s">Home</a></li>
-                <li><a href="#services" class="hover:text-gray-300 animate__animated animate__fadeIn animate__delay-2s">Services</a></li>
-                <li><a href="#about" class="hover:text-gray-300 animate__animated animate__fadeIn animate__delay-2s">About</a></li>
-                <li><a href="#contact" class="hover:text-gray-300 animate__animated animate__fadeIn animate__delay-2s">Contact</a></li>
+                <li><a href="" class="hover:text-gray-300">Home</a></li>
+                <li><a href="/pages/services.html" class="hover:text-gray-300">Services</a></li>
+                <li><a href="/pages/about.html" class="hover:text-gray-300">About</a></li>
+                <li><a href="/pages/Contact.html" class="hover:text-gray-300">Contact</a></li>
             </ul>
         </div>
     </nav>
@@ -484,5 +484,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             });
         });
     </script>
+
+    <!-- Footer -->
+    <footer class="bg-neutral-200 dark:bg-neutral-900 text-gray-500 p-4 text-center">
+        <p>&copy; 2024 OmniCloud. All rights reserved.</p>
+    </footer>
+
 </body>
 </html>

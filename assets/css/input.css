@@ -50,9 +50,9 @@
 }
 
 .page_special-text__JDcjy {
-    background: linear-gradient(-45deg,#4da5fe,#4da5fe,#d041c2,#d041c2);
-    background: -moz-linear-gradient(-45deg,#4da5fe,#4da5fe,#d041c2,#d041c2);
-    background: -webkit-gradient(-45deg,#4da5fe,#4da5fe,#d041c2,#d041c2);
+    background: linear-gradient(-45deg,#4da5fe,#4da5fe,#d041c2,#d04143);
+    background: -moz-linear-gradient(-45deg,#4da5fe,#4da5fe,#d041c2,#d04143);
+    background: -webkit-gradient(-45deg,#4da5fe,#4da5fe,#d041c2,#d04143);
     background-size: 300%;
     -webkit-background-clip: text;
     -moz-background-clip: text;
@@ -116,4 +116,18 @@
 
 .delete-vm:hover {
     background-color: #0056b3; /* Darker blue on hover */
+}
+
+@keyframes page_gradientAnimation__if28P {
+    0% {
+        background-position: 0 50%
+    }
+
+    50% {
+        background-position: 100% 50%
+    }
+
+    to {
+        background-position: 0 50%
+    }
 }
