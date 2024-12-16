@@ -1,4 +1,6 @@
 <?php
+
+
 class VM {
     public $name;
     public $cpu;
@@ -23,13 +25,14 @@ class Server {
     private $used_cpu = 0;
     private $used_ram = 0;
     private $used_ssd = 0;
-    public $vms = []; 
+    public $vms = [];
 
     public function __construct($name, $cpu, $ram, $ssd) {
         $this->name = $name;
         $this->total_cpu = $cpu;
         $this->total_ram = $ram;
         $this->total_ssd = $ssd;
+        $this->updateResourcesFromLog();
     }
 
     public function canAllocate(VM $vm) {
@@ -43,34 +46,47 @@ class Server {
             $this->used_cpu += $vm->cpu;
             $this->used_ram += $vm->ram;
             $this->used_ssd += $vm->ssd;
-            $this->vms[] = $vm; 
-            $this->logVMChange("Added", $vm); 
+            $this->vms[] = $vm;
+            $this->logVMChange("Added", $vm);
             return true;
         }
         return false;
     }
 
     public function getAvailableResources() {
-        $this->total_cpu = $this->total_cpu - $this->used_cpu;
-        $this->total_ram = $this->total_ram - $this->used_ram;
-        $this->total_ssd = $this->total_ssd - $this->used_ssd;
-
         return [
-            'cpu' => $this->total_cpu,
-            'ram' => $this->total_ram,
-            'ssd' => $this->total_ssd,
+            'cpu' => $this->total_cpu - $this->used_cpu,
+            'ram' => $this->total_ram - $this->used_ram,
+            'ssd' => $this->total_ssd - $this->used_ssd,
         ];
-    }
-
+        }
 
     public function getTotalRevenue() {
-        
         return $this->used_cpu * 5 + $this->used_ram * 0.1 + $this->used_ssd * 0.05;
     }
 
     private function logVMChange($action, VM $vm) {
         $logMessage = "$action VM: {$vm->name}, CPU: {$vm->cpu}, RAM: {$vm->ram}, SSD: {$vm->ssd}, Price: {$vm->price} CHF\n";
         file_put_contents('vm_changes.txt', $logMessage, FILE_APPEND);
+    }
+
+    private function updateResourcesFromLog() {
+        if (file_exists('vm_changes.txt')) {
+            $logEntries = file('vm_changes.txt', FILE_IGNORE_NEW_LINES);
+            foreach ($logEntries as $entry) {
+                if (strpos($entry, 'Added') !== false) {
+                    preg_match('/CPU: (\d+), RAM: (\d+), SSD: (\d+)/', $entry, $matches);
+                    $this->used_cpu += (int)$matches[1];
+                    $this->used_ram += (int)$matches[2];
+                    $this->used_ssd += (int)$matches[3];
+                } elseif (strpos($entry, 'Removed') !== false) {
+                    preg_match('/CPU: (\d+), RAM: (\d+), SSD: (\d+)/', $entry, $matches);
+                    $this->used_cpu -= (int)$matches[1];
+                    $this->used_ram -= (int)$matches[2];
+                    $this->used_ssd -= (int)$matches[3];
+                }
+            }
+        }
     }
 }
 
@@ -189,23 +205,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             switch ($ssd) {
-                case 20:
+                case 10:
                     $ssdCost = 5;
                     break;
-                case 40:
+                case 20:
                     $ssdCost = 10;
                     break;
-                case 80:
+                case 40:
                     $ssdCost = 20;
                     break;
+                case 80:
+                    $ssdCost = 40;
+                    break;
                 case 240:
-                    $ssdCost = 60;
+                    $ssdCost = 120;
                     break;
                 case 500:
-                    $ssdCost = 125;
+                    $ssdCost = 250;
                     break;
                 case 1000:
-                    $ssdCost = 250;
+                    $ssdCost = 500;
                     break;
             }
 
