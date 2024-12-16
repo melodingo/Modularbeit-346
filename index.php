@@ -365,11 +365,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </nav>
 
     <!-- Main Content -->
-    <main class="container mx-auto p-6 text-center flex-grow pt-[10%] md:pt-[15%]">
+    <main class="container mx-auto p-20 text-center flex-grow mt-20">
         <div class="grid gap-4">
             <div class="flex items-center justify-center text-2xl md:text-4xl dark:text-white animate__animated animate__zoomIn">
                 <span class="mr-2 page_wave-animation__eZFdU" style="animation-delay:1800ms">💸</span>
-                <span class="page_special-text__JDcjy text-center">PREISE</span>
+                <h1 class="text-4xl md:text-5xl font-bold page_special-text__JDcjy">PREISE</h1>
             </div>
             <p class="text-xl mt-4 animate__animated animate__fadeIn animate__delay-1s">
                 Die Firma OmniCloud ist ein innovativer neuer Player im IaaS-Cloud-
